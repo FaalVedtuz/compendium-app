@@ -1,7 +1,7 @@
 <template>
   <v-app>
 
-    <v-navigation-drawer :value="drawerState" app clipped>
+    <v-navigation-drawer :value="getDrawerState" app clipped>
       <v-list>
         <v-subheader>Games</v-subheader>
         <v-list-tile>
@@ -31,7 +31,7 @@
     </v-navigation-drawer>
 
     <v-toolbar app clipped-left>
-      <v-toolbar-side-icon @click="drawerState = !drawerState"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click="changeDrawerState()"></v-toolbar-side-icon>
       <v-toolbar-title>Compendium</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
@@ -60,7 +60,12 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapMutations } from 'vuex'
+
 export default {
+  created () {
+    this.$store.registerModule('usermodule')
+  },
 
   mounted () {
     this.$nextTick(function () {
@@ -70,20 +75,33 @@ export default {
 
   computed: {
 
+    ...mapState('usermodule', [
+      'drawerState'
+    ]),
+
+    ...mapGetters([
+      'getDrawerState'
+    ])
+
   },
 
   data () {
     return {
-      drawerState: true
+
     }
   },
 
   methods: {
     getWidth () {
       if (document.documentElement.clientWidth < 1025) {
-        this.drawerState = !this.drawerState
+        this.closeDrawer()
       }
-    }
+    },
+
+    ...mapMutations([
+      'changeDrawerState',
+      'closeDrawer'
+    ])
   }
 }
 </script>
