@@ -1,7 +1,7 @@
 <template>
   <v-app>
 
-    <v-navigation-drawer :value="getDrawerState" app clipped>
+    <v-navigation-drawer :value="drawer" app clipped>
       <v-list>
         <v-subheader>Games</v-subheader>
         <v-list-tile>
@@ -31,57 +31,83 @@
     </v-navigation-drawer>
 
     <v-toolbar app clipped-left>
-      <v-toolbar-side-icon @click="changeDrawerState()"></v-toolbar-side-icon>
+      
+      <v-toolbar-side-icon @click.stop="changeDrawerState()"></v-toolbar-side-icon>
       <v-toolbar-title>Compendium</v-toolbar-title>
       <v-spacer></v-spacer>
+      <!-- Desktop -->
       <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat>
-          Log In
-        </v-btn>
-        <v-btn flat>
-          Account
-        </v-btn>
+        <v-menu offset-y>
+          <v-btn flat color="primary" slot="activator">
+            Account
+          </v-btn>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Settings</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Logout</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
+      <!-- Mobile -->
       <v-toolbar-items class="hidden-md-and-up">
-        <v-btn flat icon>
-          <v-icon>mdi-login</v-icon>
-        </v-btn>
-        <v-btn flat icon>
-          <v-icon>mdi-account-circle</v-icon>
-        </v-btn>
+        <v-menu offset-y>
+          <v-btn flat icon color="primary" slot="activator">
+            <v-icon>mdi-account-circle</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Settings</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>
+                <v-list-tile-title>Logout</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </v-toolbar-items>
+
     </v-toolbar>
 
     <v-content>
       <router-view/>
     </v-content>
 
+    <!-- <v-btn color="primary" absolute bottom right fab>
+      <v-icon>add</v-icon>
+    </v-btn> -->
+
   </v-app>
 </template>
 
+
+
 <script>
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  created () {
-    this.$store.registerModule('usermodule')
-  },
 
-  mounted () {
-    this.$nextTick(function () {
-      window.onresize = this.getWidth
-    })
-  },
+  // mounted () {
+  //   this.$nextTick(function () {
+  //     window.onresize = this.getWidth
+  //   })
+  // },
 
   computed: {
 
-    ...mapState('usermodule', [
-      'drawerState'
-    ]),
-
-    ...mapGetters([
-      'getDrawerState'
-    ])
+    ...mapGetters('miscmodule', {
+      drawer: 'getDrawerState'
+    })
 
   },
 
@@ -92,15 +118,17 @@ export default {
   },
 
   methods: {
-    getWidth () {
-      if (document.documentElement.clientWidth < 1025) {
-        this.closeDrawer()
-      }
-    },
+    // getWidth () {
+    //   if (this.$vuetify.breakpoint.name === 'md') {
+    //     console.log('triggered')
+    //     this.closeDrawer()
+    //   }
+    // },
 
-    ...mapMutations([
-      'changeDrawerState',
-      'closeDrawer'
+    ...mapActions('miscmodule', [
+      // 'closeDrawer',
+      'changeDrawerState'
+
     ])
   }
 }
