@@ -1,138 +1,91 @@
 <template>
   <v-app>
-
-    <v-navigation-drawer :value="drawer" app clipped>
+    <v-navigation-drawer
+      persistent
+      :mini-variant="miniVariant"
+      :clipped="clipped"
+      v-model="drawer"
+      enable-resize-watcher
+      fixed
+      app
+    >
       <v-list>
-        <v-subheader>Games</v-subheader>
-        <v-list-tile>
+        <v-list-tile
+          value="true"
+          v-for="(item, i) in items"
+          :key="i"
+        >
           <v-list-tile-action>
-            <v-icon color="green">mdi-view-module</v-icon>
+            <v-icon v-html="item.icon"></v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Skyrim</v-list-tile-title>
+            <v-list-tile-title v-text="item.title"></v-list-tile-title>
           </v-list-tile-content>
-          <v-list-tile-action>
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon color="green">mdi-view-module</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>Dragon's Dogma</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-icon>mdi-chevron-right</v-icon>
-          </v-list-tile-action>
-        </v-list-tile>
-        <v-divider inset></v-divider>
       </v-list>
     </v-navigation-drawer>
-
-    <v-toolbar app clipped-left>
-      
-      <v-toolbar-side-icon @click.stop="changeDrawerState()"></v-toolbar-side-icon>
-      <v-toolbar-title>Compendium</v-toolbar-title>
+    <v-toolbar
+      app
+      :clipped-left="clipped"
+    >
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-btn icon @click.stop="miniVariant = !miniVariant">
+        <v-icon v-html="miniVariant ? 'chevron_right' : 'chevron_left'"></v-icon>
+      </v-btn>
+      <v-btn icon @click.stop="clipped = !clipped">
+        <v-icon>web</v-icon>
+      </v-btn>
+      <v-btn icon @click.stop="fixed = !fixed">
+        <v-icon>remove</v-icon>
+      </v-btn>
+      <v-toolbar-title v-text="title"></v-toolbar-title>
       <v-spacer></v-spacer>
-      <!-- Desktop -->
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-menu offset-y>
-          <v-btn flat color="primary" slot="activator">
-            Account
-          </v-btn>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Settings</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Logout</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </v-toolbar-items>
-      <!-- Mobile -->
-      <v-toolbar-items class="hidden-md-and-up">
-        <v-menu offset-y>
-          <v-btn flat icon color="primary" slot="activator">
-            <v-icon>mdi-account-circle</v-icon>
-          </v-btn>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Settings</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile>
-              <v-list-tile-content>
-                <v-list-tile-title>Logout</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </v-toolbar-items>
-
+      <v-btn icon @click.stop="rightDrawer = !rightDrawer">
+        <v-icon>menu</v-icon>
+      </v-btn>
     </v-toolbar>
-
     <v-content>
       <router-view/>
     </v-content>
-
-    <!-- <v-btn color="primary" absolute bottom right fab>
-      <v-icon>add</v-icon>
-    </v-btn> -->
-
+    <v-navigation-drawer
+      temporary
+      :right="right"
+      v-model="rightDrawer"
+      fixed
+      app
+    >
+      <v-list>
+        <v-list-tile @click="right = !right">
+          <v-list-tile-action>
+            <v-icon>compare_arrows</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-navigation-drawer>
+    <v-footer :fixed="fixed" app>
+      <span>&copy; 2017</span>
+    </v-footer>
   </v-app>
 </template>
 
-
-
 <script>
-import { mapGetters, mapActions } from 'vuex'
-
 export default {
-
-  // mounted () {
-  //   this.$nextTick(function () {
-  //     window.onresize = this.getWidth
-  //   })
-  // },
-
-  computed: {
-
-    ...mapGetters('miscmodule', {
-      drawer: 'getDrawerState'
-    })
-
-  },
-
   data () {
     return {
-
+      clipped: false,
+      drawer: true,
+      fixed: false,
+      items: [{
+        icon: 'bubble_chart',
+        title: 'Inspire'
+      }],
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: 'Vuetify.js'
     }
   },
-
-  methods: {
-    // getWidth () {
-    //   if (this.$vuetify.breakpoint.name === 'md') {
-    //     console.log('triggered')
-    //     this.closeDrawer()
-    //   }
-    // },
-
-    ...mapActions('miscmodule', [
-      // 'closeDrawer',
-      'changeDrawerState'
-
-    ])
-  }
+  name: 'App'
 }
 </script>
-
-
-
